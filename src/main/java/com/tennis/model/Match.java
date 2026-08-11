@@ -43,30 +43,22 @@ public class Match {
 
   private List<Set> sets;
   
-  @JsonIgnore 
   private Player homeFirstPlayer;
 
-    @JsonIgnore 
   private Player homeSecondPlayer;
   
-    @JsonIgnore 
   private Player awayFirstPlayer;
 
-    @JsonIgnore 
   private Player awaySecondPlayer;
 
   private Clock clock;
   
-    @JsonIgnore 
   private List<Event> events;
 
-    @JsonIgnore 
   private List<Player> players;
  
-    @JsonIgnore 
   private int home_total_score;
   
-    @JsonIgnore 
   private int away_total_score;
   
 public int getHome_total_score() {
