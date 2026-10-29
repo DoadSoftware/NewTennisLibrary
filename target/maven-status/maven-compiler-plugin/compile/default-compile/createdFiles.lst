@@ -27,10 +27,12 @@ com\tennis\model\InfobarStats.class
 com\tennis\util\TennisUtil.class
 com\tennis\dao\TennisDao.class
 com\tennis\model\API_Tournament$TeamwiseStat.class
+com\tennis\model\ExhibitionSet.class
 com\tennis\model\Ground.class
 com\tennis\model\MultipleStat.class
 com\tennis\model\API_Tournament.class
 com\tennis\model\Configurations.class
+com\tennis\model\ExhibitionMatch.class
 com\tennis\model\API_Tournament$LeaderBoard.class
 com\tennis\model\VariousText.class
 com\tennis\model\API_Tournament$PlayerStat.class
