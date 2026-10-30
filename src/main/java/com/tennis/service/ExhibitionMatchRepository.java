@@ -4,10 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tennis.model.ExhibitionMatch;
@@ -25,15 +24,15 @@ public class ExhibitionMatchRepository
 	    String baseName = match.getMatchFileName().trim();
 	    if (baseName.length() > 100 || !baseName.matches("[a-zA-Z0-9_-]+")) throw new IllegalArgumentException("Invalid Exhibition filename.");
 	    Files.createDirectories(matchesDirectory);
-	    Path target = matchesDirectory.resolve(baseName + ".exhibition.json");
+	    Path target = matchesDirectory.resolve(baseName + ".json");
 	    if (Files.exists(target)) {
 	        ExhibitionMatch existing = objectMapper.readValue(target.toFile(), ExhibitionMatch.class);
 	        if (existing == null || !match.getMatchId().equals(existing.getMatchId())) {
 	            int suffix = 2;
 	            do {
-	                target = matchesDirectory.resolve(baseName + "_" + suffix++ + ".exhibition.json");
+	                target = matchesDirectory.resolve(baseName + "_" + suffix++ + ".json");
 	            } while (Files.exists(target));
-	            match.setMatchFileName(target.getFileName().toString().replaceFirst("\\.exhibition\\.json$", ""));
+	            match.setMatchFileName(target.getFileName().toString().replaceFirst("(?i)\\.json$", ""));
 	        }
 	    }
 	    Path temp = Files.createTempFile(matchesDirectory, "EXH_", ".tmp");
@@ -54,7 +53,7 @@ public class ExhibitionMatchRepository
 	    if (matchId == null || matchId.isBlank()) throw new IllegalArgumentException("Match ID is required.");
 	    UUID.fromString(matchId);
 	    if (!Files.isDirectory(matchesDirectory)) throw new IOException("Exhibition matches directory not found.");
-	    try (var files = Files.newDirectoryStream(matchesDirectory, "*.exhibition.json")) {
+	    try (var files = Files.newDirectoryStream(matchesDirectory, "*.json")) {
 	        for (Path file : files) {
 	            try {
 	                ExhibitionMatch match = objectMapper.readValue(file.toFile(), ExhibitionMatch.class);
@@ -66,25 +65,23 @@ public class ExhibitionMatchRepository
 	    }
 	    throw new IOException("Exhibition match not found.");
 	}
-
+		
 	public List<ExhibitionMatch> findAll() throws IOException {
 	    List<ExhibitionMatch> matches = new ArrayList<>();
 	    if (!Files.isDirectory(matchesDirectory)) return matches;
-	    try (var files = Files.newDirectoryStream(matchesDirectory, "*.exhibition.json")) {
+	    try (var files = Files.newDirectoryStream(matchesDirectory, "*.json")) {
 	        for (Path file : files) {
 	            try {
 	                ExhibitionMatch match = objectMapper.readValue(file.toFile(), ExhibitionMatch.class);
-	                if (match != null && match.getMatchId() != null && !match.getMatchId().isBlank()) matches.add(match);
-	            } catch (IOException ex) {
+	                if (match != null && match.getMatchId() != null && !match.getMatchId().isBlank() && match.getSets() != null && !match.getSets().isEmpty()) matches.add(match);
+	            } catch (IOException | RuntimeException ex) {
 	                continue;
 	            }
 	        }
 	    }
-	    matches.sort(Comparator.comparing(ExhibitionMatch::getCompetitionName, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)).thenComparing(ExhibitionMatch::getMatchTitle, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
 	    return matches;
 	}
 
-	
 	public boolean exists(String matchId) {
 	    try {
 	        return load(matchId) != null;
@@ -92,5 +89,4 @@ public class ExhibitionMatchRepository
 	        return false;
 	    }
 	}
-
 }
