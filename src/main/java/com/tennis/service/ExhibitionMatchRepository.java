@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,7 +66,25 @@ public class ExhibitionMatchRepository
 	    }
 	    throw new IOException("Exhibition match not found.");
 	}
-		
+
+	public List<ExhibitionMatch> findAll() throws IOException {
+	    List<ExhibitionMatch> matches = new ArrayList<>();
+	    if (!Files.isDirectory(matchesDirectory)) return matches;
+	    try (var files = Files.newDirectoryStream(matchesDirectory, "*.exhibition.json")) {
+	        for (Path file : files) {
+	            try {
+	                ExhibitionMatch match = objectMapper.readValue(file.toFile(), ExhibitionMatch.class);
+	                if (match != null && match.getMatchId() != null && !match.getMatchId().isBlank()) matches.add(match);
+	            } catch (IOException ex) {
+	                continue;
+	            }
+	        }
+	    }
+	    matches.sort(Comparator.comparing(ExhibitionMatch::getCompetitionName, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)).thenComparing(ExhibitionMatch::getMatchTitle, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+	    return matches;
+	}
+
+	
 	public boolean exists(String matchId) {
 	    try {
 	        return load(matchId) != null;

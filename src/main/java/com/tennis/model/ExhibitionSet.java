@@ -1,3 +1,4 @@
+
 package com.tennis.model;
 
 import java.util.ArrayList;
@@ -14,11 +15,13 @@ public class ExhibitionSet {
     private String setWinnerGroup;
     private int group1Score = 0;
     private int group2Score = 0;
-    
+    private Integer group1ServingPlayerId;
+    private Integer group2ServingPlayerId;
+
     public int getGroup1Score() { return group1Score; }
     public void setGroup1Score(int group1Score) { this.group1Score = group1Score; }
     public int getGroup2Score() { return group2Score; }
-    public void setGroup2Score(int group2Score) { this.group2Score = group2Score; }    
+    public void setGroup2Score(int group2Score) { this.group2Score = group2Score; }
     public int getSetNumber() { return setNumber; }
     public void setSetNumber(int setNumber) { this.setNumber = setNumber; }
     public String getSetName() { return setName; }
@@ -35,4 +38,8 @@ public class ExhibitionSet {
     public void setSetStatus(String setStatus) { this.setStatus = setStatus; }
     public String getSetWinnerGroup() { return setWinnerGroup; }
     public void setSetWinnerGroup(String setWinnerGroup) { this.setWinnerGroup = setWinnerGroup; }
+    public Integer getGroup1ServingPlayerId() { return group1ServingPlayerId; }
+    public void setGroup1ServingPlayerId(Integer group1ServingPlayerId) { this.group1ServingPlayerId = group1ServingPlayerId; }
+    public Integer getGroup2ServingPlayerId() { return group2ServingPlayerId; }
+    public void setGroup2ServingPlayerId(Integer group2ServingPlayerId) { this.group2ServingPlayerId = group2ServingPlayerId; }
 }
